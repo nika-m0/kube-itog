@@ -15,11 +15,11 @@ var (
 func init() {
 	var ok bool
 
-	if appName, ok = os.LookupEnv("API_APP_NAME"); !ok {
-		appName = "API"
+	if appName, ok = os.LookupEnv("LOGIN_APP_NAME"); !ok {
+		appName = "LOGIN"
 	}
 
-	if bindPort, ok = os.LookupEnv("API_BIND_PORT"); !ok {
+	if bindPort, ok = os.LookupEnv("LOGIN_BIND_PORT"); !ok {
 		bindPort = "8080"
 	}
 }
