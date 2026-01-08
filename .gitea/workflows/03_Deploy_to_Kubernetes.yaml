@@ -1,0 +1,45 @@
+name: Deploy_to_Kubernetes
+on:
+  release:
+    types: [released]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      
+    - name: Configure kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+        
+    - name: Apply Kubernetes manifests
+      env:
+        DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+      run: |
+        # Заменяем placeholder в манифестах
+        cd deployments/k8s
+        for file in *.yaml; do
+          if [ -f "$file" ]; then
+            sed -i "s|\${DOCKER_USERNAME}|${DOCKER_USERNAME}|g" "$file"
+            kubectl apply -f "$file"
+          fi
+        done
+        
+    - name: Wait for deployments
+      run: |
+        kubectl rollout status deployment/root-app -n go-apps --timeout=300s
+        kubectl rollout status deployment/api-app -n go-apps --timeout=300s
+        kubectl rollout status deployment/info-app -n go-apps --timeout=300s
+        kubectl rollout status deployment/login-app -n go-apps --timeout=300s
+        
+    - name: Verify services
+      run: |
+        kubectl get all -n go-apps
+        kubectl get ingress -n go-apps

@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: root-config
+  namespace: go-apps
+data:
+  ROOT_APP_NAME: "root-service"
+  ROOT_BIND_PORT: "8080"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: go-apps
+data:
+  API_APP_NAME: "api-service"
+  API_BIND_PORT: "8081"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: info-config
+  namespace: go-apps
+data:
+  INFO_APP_NAME: "info-service"
+  INFO_BIND_PORT: "8082"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: login-config
+  namespace: go-apps
+data:
+  LOGIN_APP_NAME: "login-service"
+  LOGIN_BIND_PORT: "8083"
